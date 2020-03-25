@@ -1,0 +1,1 @@
+第二版community，打算加一个登录验证和redis缓存。
