@@ -4,6 +4,15 @@
 
 <mapper namespace="com.shen.mycommunity.mapper.UserMapper">
 
+    <resultMap type="User" id="User">
+        <id     property="id"     column="id"     />
+        <result property="name"   column="user_name"   />
+        <result property="accountId"   column="account_id"   />
+        <result property="token"   column="token"   />
+        <result property="gmtCreate"   column="gmt_create"   />
+        <result property="gmtModified"   column="gmt_modified"   />
+    </resultMap>
+
     <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
         insert into user(
         <if test="name != null and name != ''">user_name,</if>
@@ -17,5 +26,9 @@
         #{gmtCreate},#{gmtModified}
         )
     </insert>
+
+    <select id="findByToken" parameterType="String" resultMap="User">
+		select * from user where token=#{token}
+	</select>
 
 </mapper>

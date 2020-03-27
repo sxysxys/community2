@@ -12,16 +12,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
 /**
- *  @Author: shenge
- *  @Date: 2020-03-26 10:29
- *  处理github认证重定向的controller
- *
+ * @Author: shenge
+ * @Date: 2020-03-26 10:29
+ * 处理github认证重定向的controller
  */
 
 @Controller
@@ -42,25 +43,28 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code", required = false) String code,
                            @RequestParam(name = "state", required = false) String state,
-                           HttpServletRequest request) {
+                           HttpServletRequest request,
+                           HttpServletResponse response) {
         AccessDto accessDto = new AccessDto();
         accessDto.setClient_id(ciientId);
         accessDto.setClient_secret(ciientSecret);
         accessDto.setCode(code);
         accessDto.setState(state);
         accessDto.setRedirect_uri("http://localhost:887/callback");
-        String token = githubProvider.getToken(accessDto);
-        System.out.println(token);
-        GithubUser githubUser = githubProvider.getUser(token);
+        String accessToken = githubProvider.getToken(accessDto);
+        System.out.println(accessToken);
+        GithubUser githubUser = githubProvider.getUser(accessToken);
         if (githubUser != null) {
             User user = new User();
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setName(githubUser.getName());
-            user.setToken(UUID.randomUUID().toString());
+            String token = UUID.randomUUID().toString();
+            user.setToken(token);
             user.setGmtCreate(new Date());
             user.setGmtModified(user.getGmtCreate());
-            userMapper.insertUser(user);
-            request.getSession().setAttribute("user", githubUser);
+            userMapper.insertUser(user);   //如果登录成功将用户插入数据库
+            response.addCookie(new Cookie("token", token));
+//            request.getSession().setAttribute("user", githubUser);
         }
         return "redirect:/";
     }
