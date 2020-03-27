@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shen.mycommunity.mapper.UserMapper">
+
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert into user(
+        <if test="name != null and name != ''">user_name,</if>
+        <if test="accountId != null and accountId != ''">account_id,</if>
+        <if test="token != null and token != ''">token,</if>
+        gmt_create,gmt_modified
+        )values(
+        <if test="name != null and name != ''">#{name},</if>
+        <if test="accountId != null and accountId != ''">#{accountId},</if>
+        <if test="token != null and token != ''">#{token},</if>
+        #{gmtCreate},#{gmtModified}
+        )
+    </insert>
+
+</mapper>
