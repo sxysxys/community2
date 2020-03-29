@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 public class GithubUser {
-    private Long id;
+    private Long id;   //拿到的用户id
     private String bio;
-    private String name;
+    private String name;    //github的登录名
 }

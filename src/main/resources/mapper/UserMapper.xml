@@ -5,30 +5,43 @@
 <mapper namespace="com.shen.mycommunity.mapper.UserMapper">
 
     <resultMap type="User" id="User">
-        <id     property="id"     column="id"     />
-        <result property="name"   column="user_name"   />
-        <result property="accountId"   column="account_id"   />
-        <result property="token"   column="token"   />
-        <result property="gmtCreate"   column="gmt_create"   />
-        <result property="gmtModified"   column="gmt_modified"   />
+        <id property="id" column="id"/>
+        <result property="name" column="user_name"/>
+        <result property="accountId" column="account_id"/>
+        <result property="password" column="password"/>
+        <result property="userType" column="user_type"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
     </resultMap>
 
     <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
         insert into user(
         <if test="name != null and name != ''">user_name,</if>
         <if test="accountId != null and accountId != ''">account_id,</if>
-        <if test="token != null and token != ''">token,</if>
-        gmt_create,gmt_modified
+        <if test="password != null and password != ''">password,</if>
+        <if test="userType != null and userType != ''">user_type,</if>
+        gmt_create
         )values(
         <if test="name != null and name != ''">#{name},</if>
         <if test="accountId != null and accountId != ''">#{accountId},</if>
-        <if test="token != null and token != ''">#{token},</if>
-        #{gmtCreate},#{gmtModified}
+        <if test="password != null and password != ''">#{password},</if>
+        <if test="userType != null and userType != ''">#{userType},</if>
+        sysdate()
         )
     </insert>
 
-    <select id="findByToken" parameterType="String" resultMap="User">
-		select * from user where token=#{token}
+    <update id="updateUser" parameterType="User">
+        update user
+        <set>
+            <if test="name != null and name != ''">user_name=#{name},</if>
+            gmt_modified=sysdate()
+        </set>
+        where account_id = #{accountId}
+    </update>
+
+
+    <select id="findByName" parameterType="String" resultMap="User">
+		select * from user where user_name=#{userName} and user_type=#{userState}
 	</select>
 
 </mapper>

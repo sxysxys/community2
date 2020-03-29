@@ -2,6 +2,7 @@ package com.shen.mycommunity.mapper;
 
         import com.shen.mycommunity.model.User;
         import org.apache.ibatis.annotations.Mapper;
+        import org.apache.ibatis.annotations.Param;
 
 /**
  * @Author: shenge
@@ -11,6 +12,8 @@ package com.shen.mycommunity.mapper;
 public interface UserMapper {
 
     void insertUser(User user);
+    //登录时候验证
+    User findByName(@Param("userName") String userName, @Param("userState") String userState);
 
-    User findByToken(String token);
+    void updateUser(User user);
 }

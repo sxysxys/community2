@@ -2,6 +2,7 @@ package com.shen.mycommunity.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  *  @Date: 2020-03-27 20:32
  */
 @Data
-public class User {
+public class User implements Serializable {
 
     private Long id;
 
@@ -17,7 +18,9 @@ public class User {
 
     private String accountId;
 
-    private String token;  //与cookie比对
+    private String password;   //
+
+    private String userType;
 
     private Date gmtCreate;
 

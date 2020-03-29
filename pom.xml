@@ -43,6 +43,16 @@
             <artifactId>spring-boot-devtools</artifactId>
             <version>2.1.9.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>1.4.0</version>
+        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
