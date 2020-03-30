@@ -1,4 +1,4 @@
-package com.shen.mycommunity.controller;
+package com.shen.mycommunity.controller.login;
 
 import com.shen.mycommunity.dto.UserToken;
 import com.shen.mycommunity.enums.UserTypeEnum;
@@ -20,11 +20,6 @@ public class LoginController {
     @GetMapping("/login")
     public String Login(){
         return "login/log";
-    }
-
-    @GetMapping("/register")
-    public String register(){
-        return "login/register";
     }
 
     @GetMapping("/forgot")

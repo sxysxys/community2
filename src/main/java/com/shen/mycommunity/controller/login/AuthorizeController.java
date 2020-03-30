@@ -1,4 +1,4 @@
-package com.shen.mycommunity.controller;
+package com.shen.mycommunity.controller.login;
 
 import com.shen.mycommunity.dto.AccessDto;
 import com.shen.mycommunity.dto.GithubUser;

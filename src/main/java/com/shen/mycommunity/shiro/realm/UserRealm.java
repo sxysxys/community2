@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  *  @Author: shenge
  *  @Date: 2020-03-28 19:20
- *  处理一般user的realm
  */
 
 public class UserRealm extends AuthorizingRealm {

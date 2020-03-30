@@ -73,7 +73,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/callback", "anon");
         filterChainDefinitionMap.put("https://github.com/**", "anon");
-        filterChainDefinitionMap.put("/register", "authc");
+        filterChainDefinitionMap.put("/register", "anon");
 
         //支持记住我认证
         filterChainDefinitionMap.put("/**", "user");
