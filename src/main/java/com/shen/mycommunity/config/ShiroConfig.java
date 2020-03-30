@@ -1,9 +1,14 @@
 package com.shen.mycommunity.config;
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+import com.shen.mycommunity.shiro.common.MyHashedCredentialsMatcher;
 import com.shen.mycommunity.shiro.realm.UserRealm;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,31 +32,63 @@ public class ShiroConfig {
     @Value("${shiro.user.unauthorizedUrl}")
     private String unauthorizedUrl;
 
-    @Bean
-    public UserRealm userRealm() {
+    /**
+     * 密码校验规则HashedCredentialsMatcher
+     * 这个类是为了对密码进行编码的 ,
+     * 防止密码在数据库里明码保存 , 当然在登陆认证的时候 ,
+     * 这个类也负责对form里输入的密码进行编码
+     * 处理认证匹配处理器：如果自定义需要实现继承HashedCredentialsMatcher
+     */
+//    @Bean("hashedCredentialsMatcher")
+//    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+//        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
+//        //指定加密方式为MD5
+//        credentialsMatcher.setHashAlgorithmName("MD5");
+//        //加密次数
+//        credentialsMatcher.setHashIterations(1024);
+//        credentialsMatcher.setStoredCredentialsHexEncoded(true);
+//        return credentialsMatcher;
+//    }
+
+    @Bean("MyHashedCredentialsMatcher")
+    public MyHashedCredentialsMatcher myHashedCredentialsMatcher() {
+        MyHashedCredentialsMatcher credentialsMatcher = new MyHashedCredentialsMatcher();
+        //指定加密方式为MD5
+        credentialsMatcher.setHashAlgorithmName("MD5");
+        //加密次数
+        credentialsMatcher.setHashIterations(1024);
+        credentialsMatcher.setStoredCredentialsHexEncoded(true);
+        return credentialsMatcher;
+    }
+
+    @Bean("userRealm")
+    public UserRealm userRealm(@Qualifier("MyHashedCredentialsMatcher") MyHashedCredentialsMatcher myhashedCredentialsMatcher) {
         UserRealm userRealm = new UserRealm();
+        userRealm.setCredentialsMatcher(myhashedCredentialsMatcher);
         return userRealm;
     }
 
-//    @Bean
-//    public GithubUserRealm githubUserRealm() {
-//        GithubUserRealm githubUserRealm = new GithubUserRealm();
-//        return githubUserRealm;
-//    }
+    /**
+     * 不返回jsessionid。
+     * @return
+     */
+    @Bean
+    public DefaultWebSessionManager sessionManager(){
+        DefaultWebSessionManager webSessionManager = new DefaultWebSessionManager();
+        webSessionManager.setSessionIdUrlRewritingEnabled(false);
+        return webSessionManager;
+    }
 
-//    @Bean
-//    public ModularRealmAuthenticator modularRealmAuthenticator(){
-//        ModularRealmAuthenticator modularRealmAuthenticator = new ModularRealmAuthenticator();
-//        return modularRealmAuthenticator;
-//    }
 
     @Bean
-    public SecurityManager securityManager() {
+    public SecurityManager securityManager(@Qualifier("userRealm") UserRealm userRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 设置realm.
-        securityManager.setRealm(userRealm());
+        securityManager.setRealm(userRealm);
+        securityManager.setSessionManager(sessionManager());
         return securityManager;
     }
+
 
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
@@ -79,5 +116,14 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/**", "user");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
+    }
+
+    /**
+     * thymeleaf模板引擎和shiro框架的整合
+     */
+    @Bean
+    public ShiroDialect shiroDialect()
+    {
+        return new ShiroDialect();
     }
 }

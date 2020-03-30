@@ -11,6 +11,7 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -46,8 +47,9 @@ public class UserRealm extends AuthorizingRealm {
         if (token.getLoginType().equals(UserTypeEnum.LOGIN_USER.getUserState())){  //普通登录
             String username = token.getUsername();
             User user=loginService.findByName(username,UserTypeEnum.LOGIN_USER.getUserState());
-            SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user,user.getPassword(), getName());  //交给安全管理器进行管理了。
-            return info;
+            ByteSource credentialsSalt = ByteSource.Util.bytes(user.getName()+user.getSalt());  //通过username作为盐值
+            SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user,user.getPassword(), credentialsSalt,getName());  //交给安全管理器进行管理了。
+            return info;  //会进入MyHashedCredentialsMatcher进行密码的校验。
         }else if (token.getLoginType().equals(UserTypeEnum.GITHUB_USER.getUserState())){  //github登录
             String username = token.getUsername();
             User user=loginService.findByName(username,UserTypeEnum.GITHUB_USER.getUserState());

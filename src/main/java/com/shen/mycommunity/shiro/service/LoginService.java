@@ -17,4 +17,8 @@ public class LoginService {
     public User findByName(String userName, String userState) {
         return userMapper.findByName(userName,userState);
     }
+
+    public void updateUser(User user) {
+        userMapper.updateUser(user);
+    }
 }

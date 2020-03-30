@@ -15,5 +15,8 @@ public interface UserMapper {
     //登录时候验证
     User findByName(@Param("userName") String userName, @Param("userState") String userState);
 
+    void updateGithubUser(User user);
+
     void updateUser(User user);
+
 }

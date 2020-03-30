@@ -19,24 +19,34 @@
         <if test="name != null and name != ''">user_name,</if>
         <if test="accountId != null and accountId != ''">account_id,</if>
         <if test="password != null and password != ''">password,</if>
+        <if test="salt != null and salt != ''">salt,</if>
         <if test="userType != null and userType != ''">user_type,</if>
         gmt_create
         )values(
         <if test="name != null and name != ''">#{name},</if>
         <if test="accountId != null and accountId != ''">#{accountId},</if>
         <if test="password != null and password != ''">#{password},</if>
+        <if test="salt != null and salt != ''">#{salt},</if>
         <if test="userType != null and userType != ''">#{userType},</if>
         sysdate()
         )
     </insert>
 
-    <update id="updateUser" parameterType="User">
+    <update id="updateGithubUser" parameterType="User">
         update user
         <set>
             <if test="name != null and name != ''">user_name=#{name},</if>
             gmt_modified=sysdate()
         </set>
         where account_id = #{accountId}
+    </update>
+
+    <update id="updateUser" parameterType="User">
+        update user
+        <set>
+            gmt_modified=sysdate()
+        </set>
+        where user_name = #{name}
     </update>
 
 

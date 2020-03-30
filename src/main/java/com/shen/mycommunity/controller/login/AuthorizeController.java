@@ -47,9 +47,7 @@ public class AuthorizeController {
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code", required = false) String code,
-                           @RequestParam(name = "state", required = false) String state,
-                           HttpServletRequest request,
-                           HttpServletResponse response) {
+                           @RequestParam(name = "state", required = false) String state) {
         AccessDto accessDto = new AccessDto();
         accessDto.setClient_id(ciientId);
         accessDto.setClient_secret(ciientSecret);
@@ -67,7 +65,7 @@ public class AuthorizeController {
                 user1.setUserType(UserTypeEnum.GITHUB_USER.getUserState());
                 userMapper.insertUser(user1);   //如果登录成功将用户插入数据库
             }else {
-                userMapper.updateUser(user);
+                userMapper.updateGithubUser(user);
             }
         }else {
             return "redirect:/";
